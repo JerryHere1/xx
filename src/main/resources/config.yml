@@ -1,0 +1,118 @@
+# ───────────────────────────── Discord ─────────────────────────────
+discord:
+  # Bot token from https://discord.com/developers/applications  (Bot tab -> Reset Token)
+  # No privileged intents are needed.
+  token: "PUT_YOUR_BOT_TOKEN_HERE"
+  # Shown as "Listening to ..." on the bot's profile.
+  activity: "/play"
+  # Optional: your server (guild) ID. Slash commands then appear instantly.
+  # Leave empty to register them globally (can take a while to show up).
+  guild-id: ""
+
+  # Who is allowed to control the music (/play, /panel and the panel buttons).
+  # Empty list = everyone sitting in the voice channel may control it.
+  # Put one or more Discord USER IDs here to lock it to those people only:
+  #   allowed-user-ids: [123456789012345678]
+  # To get your ID: Discord Settings -> Advanced -> Developer Mode ON,
+  # then right-click your name -> "Copy User ID".
+  allowed-user-ids: []
+
+  # Typed commands like +play / +skip, next to the slash commands.
+  # NOTE: Discord calls reading message text a "privileged intent". Switch it on at
+  # https://discord.com/developers/applications -> your app -> Bot -> Privileged Gateway Intents
+  # -> MESSAGE CONTENT INTENT. Without it the bot still starts, just with slash commands only.
+  prefix-commands: true
+  # Starting prefix for every server. Administrators can change theirs with "+prefix !",
+  # which is saved per server in prefixes.yml (this value stays as the default for new servers).
+  prefix: "+"
+
+# ───────────────────────────── Player ──────────────────────────────
+player:
+  default-volume: 50        # 0-100 is normal; the panel's volume buttons use volume-step
+  max-volume: 150           # above 100 may distort
+  volume-step: 10
+  max-queue-size: 200
+  max-playlist-tracks: 100  # tracks taken from a playlist / album link
+  idle-leave-seconds: 180   # leave voice this long after the queue ends (0 = never)
+  empty-leave-seconds: 30   # leave voice this long after everyone left (0 = never)
+  panel-refresh-seconds: 15 # how often the progress bar updates (0 = only on changes)
+  announce-now-playing: true # post "Now playing <song>" in the chat each time a song starts
+
+# ──────────────────────── Panel looks ────────────────────────
+panel:
+  # Side colour of the panel, as a hex code. Empty = soft pink.
+  # Examples: "#F5A9C7" pink · "#A7C7E7" baby blue · "#C3B1E1" lilac · "#5865F2" Discord blurple
+  color: "#F5A9C7"
+
+  # The panel's own icon set. On first start the bot uploads 13 small PNGs to itself as
+  # "application emojis" - they work in every server, use none of your server's emoji slots,
+  # and nothing needs setting up. Set to false to use ordinary emoji instead.
+  custom-icons: true
+
+  # A GIF or image shown at the bottom of the panel. Empty = none.
+  # Must be a DIRECT image link ending in .gif / .png / .webp - on Tenor, right-click the GIF and
+  # "Copy image address" (a normal tenor.com/view/... page link will NOT work).
+  gif-url: ""
+
+# ───────────────────────────── YouTube ─────────────────────────────
+youtube:
+  # "youtube-source" -> built-in, no extra software (YouTube breaks this from time to time)
+  # "yt-dlp"         -> uses a yt-dlp binary installed on the host (updates faster than youtube-source)
+  backend: "youtube-source"
+
+  # Only for backend = yt-dlp: command or full path of the executable.
+  yt-dlp-path: "yt-dlp"
+
+  # Only for backend = youtube-source. Tried in this order. Names are class names from
+  # dev.lavalink.youtube.clients. Add "Tv" if you use OAuth below.
+  clients: [Music, AndroidVr, Ios, Android, Web, TvHtml5Simply]
+
+  # Remote cipher server (https://github.com/kikkia/yt-cipher). YouTube hides the real stream URLs behind
+  # a scrambled script; this free public server unscrambles it so playback keeps working after YouTube changes.
+  # Leave url empty to do it locally instead (works only until YouTube changes its player again).
+  remote-cipher:
+    url: "https://cipher.kikkia.dev/"
+    password: ""
+    user-agent: "DiscordMusicPanel"
+
+  # Optional OAuth login to look less like a bot. USE A THROWAWAY GOOGLE ACCOUNT - it can get banned.
+  # With enabled=true and no refresh-token, the console prints a code to enter at google.com/device;
+  # afterwards the console prints a refresh token you can paste below.
+  oauth:
+    enabled: false
+    refresh-token: ""
+
+# ───────────────────────────── Spotify ─────────────────────────────
+# Spotify links are resolved with Spotify's API (title/artist/cover) and the audio is
+# found on YouTube. Create a free app at https://developer.spotify.com/dashboard
+spotify:
+  enabled: false
+  client-id: ""
+  client-secret: ""
+  country-code: "US"
+
+# ──────────────────── Voice commands ("Jarvis, play lofi hip hop") ────────────────────
+# OFF by default. Needs a one-time speech-model download - see the README.
+# PRIVACY: only the user IDs below are transcribed; everyone else's audio is thrown away
+# immediately. Tell the people in your voice channel that this is switched on.
+voice-commands:
+  enabled: false
+
+  # Whose voice the bot obeys. Leave empty to reuse discord.allowed-user-ids.
+  # If both are empty, voice commands stay off (the bot won't transcribe a whole channel).
+  user-ids: []
+
+  # Say this first: "jarvis play lofi hip hop".
+  # Offline models often mishear unusual names - if "jarvis" doesn't work, try "computer" or "music".
+  wake-word: "jarvis"
+  # false = no wake word needed, just say "play lofi hip hop" (more false triggers).
+  require-wake-word: true
+
+  # Folder holding the unzipped Vosk model. It must contain the folders am/, conf/ and graph/.
+  model-path: "plugins/DiscordMusicPanel/vosk-model"
+
+  # How long a pause counts as the end of a sentence, in milliseconds.
+  silence-ms: 800
+
+  # Post "Heard: ..." in the chat so you can see what it understood. Turn off once it works well.
+  show-what-i-heard: true

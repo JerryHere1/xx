@@ -1,0 +1,23 @@
+name: DiscordMusicPanel
+version: '1.0.0'
+main: dev.musicpanel.MusicPanelPlugin
+api-version: '1.21.11'
+description: Discord music bot (YouTube + Spotify) with a button control panel, running inside Paper.
+authors: [DiscordMusicPanel]
+
+# Offline speech recognition for the voice commands. Paper downloads this once on first start
+# and caches it in the server's "libraries" folder; it is not bundled in this jar.
+libraries:
+  - com.alphacephei:vosk:${vosk.version}
+
+commands:
+  musicpanel:
+    description: Manage the Discord music bot
+    usage: /<command> <status|reload|stop>
+    aliases: [mpanel]
+    permission: musicpanel.admin
+
+permissions:
+  musicpanel.admin:
+    description: Manage the Discord music bot from in-game / console
+    default: op
